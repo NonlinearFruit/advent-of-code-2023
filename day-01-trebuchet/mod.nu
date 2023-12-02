@@ -20,7 +20,7 @@ def decode [] {
   }
 }
 
-export def go [] {
+export def "part 2" [] {
   open "day-01-trebuchet/input"
   | decode
   | reduce {|int, sum| $int + $sum }
@@ -28,7 +28,7 @@ export def go [] {
 
 #[test]
 def test_module_solves_the_problem [] {
-  assert equal 54019 (go)
+  assert equal 54019 (part 2)
 }
 
 #[test]

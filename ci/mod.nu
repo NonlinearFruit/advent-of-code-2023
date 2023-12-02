@@ -28,9 +28,17 @@ export def "run puzzle" [day?:string] {
   if day == null {
     mut day = date now | format date "%d"
   }
+  let folder = (ls | get name | where (str contains $day) | first) 
+  print $folder
 }
 
 export def "star count" [] {
+  aoc calendar
+  | lines
+  | where (str ends-with '*')
+  | str replace -r '^.*?([*]+)$' '${1}'
+  | str join
+  | str length
 }
 
 export def "update readme" [] {
