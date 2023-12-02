@@ -27,7 +27,7 @@ git commit -m "Import puzzle for day $DAY"
 ## Run tests
 
 ```sh
-nu -c 'use std testing run-tests; run-tests'
+nu -c 'use ci; ci test'
  ````
 
 ## Run puzzle
