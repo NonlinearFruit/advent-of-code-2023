@@ -51,6 +51,16 @@ export def "pull puzzle" [day?:string] {
   let folder = $"day-($day)"
   mkdir $folder
   aoc -y $year -d $day download --overwrite --input-file $"($folder)/input" --puzzle-file $"($folder)/README.md"
+  $'use assert
+
+export def "part 1" [] {
+  open $"($folder)/input"
+}
+
+export def "part 2" [] {
+  open $"($folder)/input"
+}'
+  | save $"($folder)/mod.nu"
 }
 
 # Submit an answer to a puzzle
