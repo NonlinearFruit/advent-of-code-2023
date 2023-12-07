@@ -79,7 +79,7 @@ export def "run puzzle" [day?:string] {
     mut day = date now | format date "%d"
   }
   let folder = (ls | get name | where (str contains $day) | first) 
-  print $folder
+  nu -c $"use ($folder); ($folder) part 1"
 }
 
 # Recalculate the README
@@ -111,6 +111,23 @@ vim ~/.adventofcode.session # https://github.com/scarvalhojr/aoc-cli?tab=readme-
 
 # Usage
 (docs)
-    "
+
+## Nushell v0.87.1: Lessons Learned
+
+- Test result summary \(eg: `Failed: 0 Passed: 50 Skipped: 5`)
+- Printing test name _with_ the test error
+- Printing filename + line + column with error
+- Parameterized tests
+- Nesting tests \(eg: `describe`)
+- Find regex matches in string with their corresponding index in the string \(eg: 'day-3')
+- Version specific documentation \(eg: `v0.85.0` vs `v0.87.1`)
+- Unexpected errors 'assert index wrong' that show the internal interpreter error and not the source code issue
+- Unexpected errors 'to noun' that show the internal interpreter error and not the source code issue
+  - `can't convert list<error> to NUON`
+- Unexpected white space dependent syntax \(eg: `1+1` vs `1 + 1`)
+- `run-tests` should output structured data \(eg: test name, status, execution time, etc)
+- String interpolation parsing has unexpected behavior
+   - Double quote allows escaping `\(` and singles don't
+- Negative asserts \(eg: `assert not equal` or `assert does not contain`)"
   | save -f README.md
 }
