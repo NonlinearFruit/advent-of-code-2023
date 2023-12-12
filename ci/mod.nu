@@ -5,6 +5,16 @@ def "find folder" [day:string] {
   | if ($in | is-empty) { null } else { first }
 }
 
+def "find part" [day:string] {
+  let folder = find folder $day
+  open $'($folder)/README.md'
+  | if ($in | str contains 'Your puzzle answer was') {
+    2
+  } else {
+    1
+  }
+}
+
 def "test count" [] {
  use std testing run-tests
  run-tests --list 
@@ -43,6 +53,19 @@ nu -c 'use ci; ci ($in)'
   | ansi strip
 }
 
+# Runs all the unit tests for a single day
+export def "test day" [day:string] {
+ use std testing run-tests
+ run-tests --path (find folder $day)
+}
+
+# Debugs the given day
+export def "debug day" [day:string] {
+  let folder = (find folder $day)
+  let part = (find part $day)
+  nu -c $'use ($folder); ($folder) part ($part) debug'
+}
+
 # Runs all the unit tests
 export def test [] {
  use std testing run-tests
@@ -61,8 +84,20 @@ export def "pull puzzle" [day?:string] {
   } else {
     mkdir $folder
     aoc -y $year -d $day download --overwrite --input-file $"($folder)/input" --puzzle-file $"($folder)/README.md"
+
+    open $"($folder)/README.md"
+    | lines
+    | first
+    | parse -r '^\\--- Day \d+: (?<title>.*) ---$' 
+    | get title 
+    | first 
+    | str downcase 
+    | str replace ' ' '-' 
+    | $'($folder)-($in)'
+    | mv $folder $in
+
     $'use assert
-const input_file = $"($folder)/input"
+const input_file = "(find folder $day)/input"
 
 export def "part 1" [] {
   open $input_file
@@ -84,18 +119,7 @@ export def "part 2 debug" [] {
 def test [] {
   
 }'
-    | save $"($folder)/mod.nu"
-
-    open $"($folder)/README.md"
-    | lines
-    | first
-    | parse -r '^\\--- Day \d+: (?<title>.*) ---$' 
-    | get title 
-    | first 
-    | str downcase 
-    | str replace ' ' '-' 
-    | $'($folder)-($in)'
-    | mv $folder $in
+    | save $"(find folder $day)/mod.nu"
   }
 }
 
@@ -105,7 +129,7 @@ export def "submit answer" [day?:string] {
     mut day = date now | format date "%d"
   }
   let year = 2023
-  let part = 2
+  let part = (find part $day)
   aoc -y $year -d $day submit $part (run puzzle $day)
 }
 
@@ -164,6 +188,7 @@ vim ~/.adventofcode.session # https://github.com/scarvalhojr/aoc-cli?tab=readme-
 - `run-tests` should output structured data \(eg: test name, status, execution time, etc)
 - String interpolation parsing has unexpected behavior
    - Double quote allows escaping `\(` and singles don't
+- `$var | get field` works at times when `$var.field` feels like it should but doesn't
 - Negative asserts \(eg: `assert not equal` or `assert does not contain`)"
   | save -f README.md
 }

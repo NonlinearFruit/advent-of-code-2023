@@ -3,15 +3,15 @@
 
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/NonlinearFruit/advent-of-code-2023/master)](https://github.com/NonlinearFruit/advent-of-code-2023/commits/master/)
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/NonlinearFruit/advent-of-code-2023/test.yml?label=tests)](https://github.com/NonlinearFruit/advent-of-code-2023/actions/workflows/test.yml)
-![star count](https://img.shields.io/badge/stars-6-yellow)
-![test count](https://img.shields.io/badge/tests-89-blue)
+![star count](https://img.shields.io/badge/stars-7-yellow)
+![test count](https://img.shields.io/badge/tests-99-blue)
 
 ```
 
                                                  
                                                  
                                                  
-                                                 
+                        *                          13 
                                                  
         *                                          12 
                                                  
@@ -21,13 +21,13 @@
                *                                    9 
                     *                               8 
                                                  
-                  *                                 7 
+                  *            .   '    '  .        7 
                                   *                 6 
-                                                 
-                                           *        5 
-                 ...''''                         
-              .''                  *                4 
-            .'                    /              
+                         '                     ' 
+                                  ~        *        5 
+                 ...'''''          .''.~        '
+              .''          .   ~..'*   '. ~  .      4 *
+            .'               '''../......'''     
             :             /\    -/  :            
             '.            -   - /  .'            
               '..    -     -   *..'                 3 **
@@ -44,6 +44,34 @@ vim ~/.adventofcode.session # https://github.com/scarvalhojr/aoc-cli?tab=readme-
 ```
 
 # Usage
+
+<details>
+<summary>
+nu -c 'use ci; ci debug day'
+</summary>
+
+```
+Debugs the given day
+
+Usage:
+  > debug day <day> 
+
+Flags:
+  -h, --help - Display the help message for this command
+
+Parameters:
+  day <string>: 
+
+Input/output types:
+  ╭───┬───────┬────────╮
+  │ # │ input │ output │
+  ├───┼───────┼────────┤
+  │ 0 │ any   │ any    │
+  ╰───┴───────┴────────╯
+
+
+```
+</details>
 
 <details>
 <summary>
@@ -140,8 +168,39 @@ Runs all the unit tests
 Usage:
   > test 
 
+Subcommands:
+  test day - Runs all the unit tests for a single day
+
 Flags:
   -h, --help - Display the help message for this command
+
+Input/output types:
+  ╭───┬───────┬────────╮
+  │ # │ input │ output │
+  ├───┼───────┼────────┤
+  │ 0 │ any   │ any    │
+  ╰───┴───────┴────────╯
+
+
+```
+</details>
+
+<details>
+<summary>
+nu -c 'use ci; ci test day'
+</summary>
+
+```
+Runs all the unit tests for a single day
+
+Usage:
+  > test day <day> 
+
+Flags:
+  -h, --help - Display the help message for this command
+
+Parameters:
+  day <string>: 
 
 Input/output types:
   ╭───┬───────┬────────╮
@@ -195,4 +254,6 @@ Input/output types:
 - `run-tests` should output structured data (eg: test name, status, execution time, etc)
 - String interpolation parsing has unexpected behavior
    - Double quote allows escaping `(` and singles don't
+- `$var | get field` works at times when `$var.field` feels like it should but doesn't
 - Negative asserts (eg: `assert not equal` or `assert does not contain`)
+- Navigating through an element in an array doesn't work as expected (eg: `$questions.Data.$number.Proofs.References` fails, `$questions.Data | get $number | get Proofs.References` works)
