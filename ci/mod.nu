@@ -1,3 +1,10 @@
+def "find folder" [day:string] {
+  ls 
+  | get name 
+  | where (str contains $day) 
+  | if ($in | is-empty) { null } else { first }
+}
+
 def "test count" [] {
  use std testing run-tests
  run-tests --list 
@@ -48,19 +55,48 @@ export def "pull puzzle" [day?:string] {
     mut day = date now | format date "%d"
   }
   let year = 2023
-  let folder = $"day-($day)"
-  mkdir $folder
-  aoc -y $year -d $day download --overwrite --input-file $"($folder)/input" --puzzle-file $"($folder)/README.md"
-  $'use assert
+  let folder = (find folder $day | default $"day-($day)")
+  if ($folder | path exists) {
+    aoc -y $year -d $day download --overwrite --input-file $"($folder)/input" --puzzle-file $"($folder)/README.md"
+  } else {
+    mkdir $folder
+    aoc -y $year -d $day download --overwrite --input-file $"($folder)/input" --puzzle-file $"($folder)/README.md"
+    $'use assert
+const input_file = $"($folder)/input"
 
 export def "part 1" [] {
-  open $"($folder)/input"
+  open $input_file
+}
+
+export def "part 1 debug" [] {
+  open $input_file
 }
 
 export def "part 2" [] {
-  open $"($folder)/input"
+  open $input_file
+}
+
+export def "part 2 debug" [] {
+  open $input_file
+}
+
+#[test]
+def test [] {
+  
 }'
-  | save $"($folder)/mod.nu"
+    | save $"($folder)/mod.nu"
+
+    open $"($folder)/README.md"
+    | lines
+    | first
+    | parse -r '^\\--- Day \d+: (?<title>.*) ---$' 
+    | get title 
+    | first 
+    | str downcase 
+    | str replace ' ' '-' 
+    | $'($folder)-($in)'
+    | mv $folder $in
+  }
 }
 
 # Submit an answer to a puzzle
@@ -78,7 +114,7 @@ export def "run puzzle" [day?:string] {
   if day == null {
     mut day = date now | format date "%d"
   }
-  let folder = (ls | get name | where (str contains $day) | first) 
+  let folder = (find folder $day) 
   nu -c $"use ($folder); ($folder) part 1"
 }
 
